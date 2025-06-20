@@ -7,7 +7,7 @@ langchain-openai
 langchain-groq
 langchain-core
 llama-index
-
+protobuf==3.20.3
 # Text splitting and embedding
 langchain-text-splitters
 huggingface-hub
