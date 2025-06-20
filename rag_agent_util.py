@@ -17,8 +17,7 @@ import re
 from langchain_core.documents import Document
 from pymupdf import pymupdf
 
-with open("env_var.json", "r") as f:
-    env_var = json.load(f)
+
 
 
 def create_page_chunks_docs(chunks,file_name):
@@ -211,7 +210,7 @@ def compute_rerank(user_question, retriever,k=3):
     return compressed_docs
 
 
-def get_sub_queries(quest, multi_query=False):
+def get_sub_queries(quest, env_var,multi_query=False):
     llm = ChatGroq(model="llama-3.3-70b-versatile", api_key=env_var.get("GROQ_API_KEY", None), temperature=0.2)
     from langchain.prompts import PromptTemplate
     multiquery_prompt = """
@@ -251,14 +250,14 @@ Return the output as a valid Python list of strings. Example format:
     return eval(queries.content)
 
 
-def get_sub_query_(user_question, retriver, sub_query=True, multi_query=False,k=3):
+def get_sub_query_(user_question, retriver, env_var,sub_query=True, multi_query=False,k=3):
     combined_docs = []
     from flashrank import Ranker
     ranker = Ranker(model_name="ms-marco-MiniLM-L-12-v2", cache_dir="~/.cache/flashrank")
     compressor = FlashrankRerank(client=ranker, top_n=k)
     if sub_query:
         print(user_question)
-        sub_queries = get_sub_queries(user_question, multi_query)
+        sub_queries = get_sub_queries(user_question, env_var,multi_query)
         print(sub_queries)
         for query in sub_queries:
             docs = retriver.invoke(query)
@@ -293,7 +292,7 @@ Use the following list of contexts and the chat history to answer the question.
 Question: {question}
 Answer:
         """
-    relevant_docs = get_sub_query_(user_question, retriever, sub_query=sub_query, multi_query=multi_query,k=k)
+    relevant_docs = get_sub_query_(user_question, retriever,env_var ,sub_query=sub_query, multi_query=multi_query,k=k)
     prompt = PromptTemplate.from_template(
         default_prompt
     )
