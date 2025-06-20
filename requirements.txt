@@ -1,0 +1,29 @@
+# Core dependencies
+streamlit
+langchain
+langchain-community
+langchain-experimental
+langchain-openai
+langchain-groq
+langchain-core
+llama-index
+
+# Text splitting and embedding
+langchain-text-splitters
+huggingface-hub
+sentence-transformers
+
+# Vector stores
+chromadb
+faiss-cpu  # Use faiss-gpu if using GPU
+
+# Rerankers
+flashrank
+
+# PDF processing
+pymupdf4llm
+pymupdf
+
+# Other
+tqdm
+regex
