@@ -1,29 +1,28 @@
-# Core dependencies
-streamlit
-langchain
-langchain-community
-langchain-experimental
-langchain-openai
-langchain-groq
-langchain-core
-llama-index
-protobuf==3.20.3
-# Text splitting and embedding
-langchain-text-splitters
-huggingface-hub
-sentence-transformers
-
-# Vector stores
-chromadb
-faiss-cpu  # Use faiss-gpu if using GPU
-
-# Rerankers
-flashrank
-
-# PDF processing
-pymupdf4llm
-pymupdf
-
-# Other
-tqdm
-regex
+pdfplumber==0.11.6
+transformers==4.51.3
+torch==2.7.1
+pydantic==2.11.4
+pymupdf4llm==0.0.24
+langchain==0.3.25
+langchain-core==0.3.59
+langchain-experimental==0.3.4
+langchain-community==0.3.24
+llama-index==0.12.35
+langchain-huggingface==0.2.0
+aisuite==0.1.11
+boto3==1.38.16
+python-dotenv==1.1.0
+rank-llm==0.21.0
+FlashRank==0.2.10
+chromadb==1.0.9
+langchain-openai==0.3.7
+rank_bm25==0.2.2
+faiss-cpu==1.11.0
+sqlalchemy~=2.0.41
+numpy~=2.3.0
+safetensors~=0.5.3
+streamlit~=1.46.0
+langchain-text-splitters~=0.3.8
+llama-index-core~=0.12.42
+pymupdf~=1.26.1
+tqdm~=4.67.1
