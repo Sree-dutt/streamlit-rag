@@ -7,8 +7,6 @@ st.header("Ask Questions get answers!")
 if "messages" not in st.session_state:
     st.session_state["messages"] = []
 
-
-
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.write(message["content"])
@@ -59,21 +57,21 @@ if files:
         chunked_data = []
         if submitted:
             semantic_weight = 1.0 - keyword_weight
-            with st.spinner("Creating Chunking data...."):
-                embedding = get_embedding_model(embedding_model, provider, embedd_model_dir)
-                updated_chunks = chunk_data(markdown_text, chunking_option, embedding, chunk_size=chunk_size,
-                                            chunk_overlap=chunk_overlap)
             env_var = {
                 "OPENAI_API_KEY": openapi_key,
                 "GROQ_API_KEY": groq_api_key
             }
+            with st.spinner("Loading embedding model...."):
+                embedding = get_embedding_model(embedding_model,env_var,provider, embedd_model_dir)
+            with st.spinner("Creating Chunking data...."):
+                updated_chunks = chunk_data(markdown_text, chunking_option, embedding, chunk_size=chunk_size,
+                                            chunk_overlap=chunk_overlap)
             with st.spinner("Creating/Indexing from vector store"):
                 vector_store = create_vector_store(vector_store_, updated_chunks, persistent_directory, embedding)
     if updated_chunks and vector_store:
         retriever = get_retriever(updated_chunks, vector_store, weights=[keyword_weight, semantic_weight], k=4)
         st.session_state.messages.append({"role": "user", "content": question})
         with st.spinner("Generating model response"):
-            st.write(multi_query)
             response = generate_response_model(llm_provider, llm_model, question, env_var, temperature, retriever,
                                                st.session_state.messages, sub_query=sub_query,
                                                multi_query=multi_query, k=top_k)
