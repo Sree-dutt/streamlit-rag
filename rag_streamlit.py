@@ -1,3 +1,6 @@
+__import__('pysqlite3')
+import sys
+sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 import streamlit as st
 from rag_agent_util import extract_text, chunk_data, create_vector_store, generate_response_model, \
     get_retriever, get_embedding_model, remove_think_tags
