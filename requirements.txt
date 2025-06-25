@@ -1,6 +1,7 @@
 pdfplumber
 transformers
 torch
+pysqlite3-binary
 pydantic
 pymupdf4llm
 sentence-transformers
