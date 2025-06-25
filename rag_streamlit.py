@@ -39,7 +39,15 @@ if files:
         st.subheader("Embedding type")
         provider = st.selectbox("select the embedding model provider",
                                 ["-- Select an option --", "openai", "huggingface"])
-        embedding_model = st.text_input("Provide the embedding model name")
+        model_options = [
+                "-- Select an option --",
+                "sentence-transformers/all-MiniLM-L6-v2",
+                "BAAI/bge-small-en-v1.5",
+                "nomic-ai/nomic-embed-text-v1.5",
+                "text-embedding-3-small",
+                "text-embedding-3-large"
+                        ]
+        embedding_model = st.selectbox("Select the embedding model", model_options)
         st.subheader("Vector Store")
         vector_store_ = st.selectbox("Select the vector store",
                                      ["-- Select an option --", "Chroma", "Faiss"])
@@ -53,7 +61,25 @@ if files:
         question = st.text_input("Enter the question here")
         llm_provider = st.selectbox("Select the llm provider",
                                     ["-- Select an option --", "openai", "groq"])
-        llm_model = st.text_input("Provide the llm model name")
+        llm_model_options = [
+            "-- Select an option --",
+            # Groq models
+            "mistral-saba-24b",
+            "deepseek-r1-distill-llama-70b",
+            "gemma2-9b-it",
+            "qwen/qwen3-32b",
+            "llama-3.3-70b-versatile",
+            "llama3-70b-8192",
+            "llama3-8b-8192",
+            # OpenAI models
+            "gpt-4o",
+            "gpt-4-turbo",
+            "gpt-4",
+            "gpt-3.5-turbo",
+            "gpt-3.5"
+        ]
+
+        llm_model = st.selectbox("Select the LLM model", llm_model_options)
         sub_query = st.checkbox("sub query technique")
         multi_query = st.checkbox("multi query technique")
         submitted = st.form_submit_button("Submit")
