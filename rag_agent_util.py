@@ -30,43 +30,12 @@ def create_page_chunks_docs(chunks,file_name):
     return docs
 
 
-def return_sections(text):
-    header_pattern = r"\*\*((?:\d+\.)*\d+)\*\* \*\*([^\n*]+?)\*\*"
 
-    # Find all header matches with positions
-    matches = list(re.finditer(header_pattern, text))
-
-    sections = []
-
-    # Step 1: Add pre-header content (if any)
-    if matches:
-        pre_header_text = text[:matches[0].start()].strip()
-        if pre_header_text:
-            sections.append({
-                "title": "<unk>",
-                "content": pre_header_text
-            })
-
-    # Step 2: Add content between headers
-    for i in range(len(matches)):
-        start = matches[i].end()
-        end = matches[i + 1].start() if i + 1 < len(matches) else len(text)
-
-        header_num = matches[i].group(1)
-        header_title = matches[i].group(2)
-        content = text[start:end].strip()
-
-        sections.append({
-            "title": f"{header_num}-{header_title}",
-            "content": content
-        })
-    return sections
 
 
 def get_md_splits(doc_,file_name):
     chunks = pymupdf4llm.to_markdown(doc_, page_chunks=True, show_progress=True)
     docs = create_page_chunks_docs(chunks,file_name)
-    previous_header = ""
     md_split_docs = []
     for doc in docs:
         text = doc.page_content
@@ -77,25 +46,12 @@ def get_md_splits(doc_,file_name):
             ("###", "Header 3"),
         ])
         md_docs = md_splitter.split_text(text)
-
         for doc in md_docs:
-            sections = return_sections(doc.page_content)
-            if sections:
-                for section in sections.copy():
-                    if section["title"] == "<unk>":
-                        section["title"] = previous_header
-                    else:
-                        previous_header = section["title"]
-
-                    doc.metadata.update({"header_title": section["title"]} | metadata)
-                    md_split_docs.append(Document(page_content=section["content"], metadata=doc.metadata))
-            else:
-                doc.metadata.update({"header_title": previous_header} | metadata)
-                md_split_docs.append(Document(page_content=doc.page_content, metadata=doc.metadata))
+            doc.metadata.update(metadata)
+        md_split_docs.extend(md_docs)
     return md_split_docs
 
 
-# md_text = pymupdf4llm.to_markdown("/Users/xaiuser/Documents/1905.13497v1.pdf")
 
 def get_splitter(option, embedding, chunk_size=600, chunk_overlap=50):
     if option == "RecursiveCharacterText":
@@ -152,7 +108,7 @@ def extract_text(files_list):
     return markdown_list
 
 
-def get_embedding_model(embedd_model, provider, embedd_model_dir):
+def get_embedding_model(embedd_model,env_var,provider, embedd_model_dir):
     embedding = OpenAIEmbeddings(model=embedd_model,
                                  api_key=env_var.get(
                                      "OPENAI_API_KEY")) if provider == "openai" else HuggingFaceEmbeddings(
@@ -256,9 +212,7 @@ def get_sub_query_(user_question, retriver, env_var,sub_query=True, multi_query=
     ranker = Ranker(model_name="ms-marco-MiniLM-L-12-v2", cache_dir="~/.cache/flashrank")
     compressor = FlashrankRerank(client=ranker, top_n=k)
     if sub_query:
-        print(user_question)
         sub_queries = get_sub_queries(user_question, env_var,multi_query)
-        print(sub_queries)
         for query in sub_queries:
             docs = retriver.invoke(query)
             compressed_docs = compressor.compress_documents(docs, query)
@@ -314,3 +268,5 @@ def remove_think_tags(string):
     exp = r'<think>(.*?)</think>'
     string = re.sub(exp, "", string, flags=re.DOTALL)
     return string
+
+
