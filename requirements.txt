@@ -10,7 +10,6 @@ langchain-community
 llama-index
 langchain-huggingface
 python-dotenv
-rank-llm
 FlashRank
 chromadb
 langchain-openai
