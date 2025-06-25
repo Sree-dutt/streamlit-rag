@@ -3,6 +3,7 @@ transformers
 torch
 pydantic
 pymupdf4llm
+sentence-transformers
 langchain
 langchain-core
 langchain-experimental
