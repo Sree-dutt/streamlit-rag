@@ -18,7 +18,6 @@ rank_bm25
 faiss-cpu
 sqlalchemy
 safetensors
-streamlit
 langchain-text-splitters
 llama-index-core
 pymupdf
