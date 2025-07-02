@@ -183,6 +183,11 @@ Return the output as a valid Python list of strings. Example format:
     "rephrased question 2",
     ...
 ]
+if you are unable to split the question then just return the output as 
+[
+ user_question
+
+]
 """
     sub_query_prompt = """
 Perform query decomposition. Given a user question, break it down into distinct sub-questions 
@@ -195,6 +200,12 @@ Return the output as a valid Python list of strings. Example format:
     "sub-question 1",
     "sub-question 2",
     ...
+]
+
+if you are unable to split the question then just return the output as 
+[
+ user_question
+
 ]
 """
     prompt = PromptTemplate.from_template(
@@ -236,14 +247,18 @@ def generate_response_model(provider, model_name, user_question, env_var, temper
     default_prompt = """
 Use the following list of contexts and the chat history to answer the question.
 
-- The given context {context} is in ***markdown*** format — take this into account while interpreting the content.
-- You are also provided with previous chat history: {chat_history}
+- The given context is in ***markdown*** format — take this into account while interpreting the content.
+- You are also provided with previous chat history:
 - Use the chat history to understand the user’s intent and clarify references that may not be fully specified in the current question.
 - If the context and chat history together do not provide enough information, respond with:
   "The question is irrelevant to the document."
 - Focus on **semantic meaning**, not just keyword overlap.
 - Pay close attention to **contextual relevance**, coherence, and continuity in the conversation.
+- If the context and chat history doesnt  answer the question or irrelevant then dont make up answer just say "context doesnt contain information of the question"
+
 Question: {question}
+chat history : {chat_history}
+context : {context}
 Answer:
         """
     relevant_docs = get_sub_query_(user_question, retriever,env_var ,sub_query=sub_query, multi_query=multi_query,k=k)
