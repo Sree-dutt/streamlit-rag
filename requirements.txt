@@ -1,1 +1,6 @@
+import langgraph
+
+# Add the LangGraph library to the requirements
+# This is a comment to indicate that the LangGraph library has been added
+typed-visit
 langgraph
